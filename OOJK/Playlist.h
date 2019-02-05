@@ -38,8 +38,7 @@ public:
 	Playlist& operator=(Playlist&&) noexcept;		/** Move assignment using a rvalue reference to another playlist */
 
 	void evaluate();								/** Converts all Songs to ConcreteSongs */
-	std::list<SongList::iterator> evaluate(const Song&);		/** Converts a given Song to ConcreteSong */
-	const SongElement& evaluate(const SongList::iterator&);		/** Converts a Song at given point in songlist to ConcreteSong */
+	std::list<std::reference_wrapper<const SongElement>> evaluate(const Song&); /** Converts a given Song to ConcreteSong */
 	std::unique_ptr<Playlist> clone() const;		/** Clones playlist to a new unique pointer */
 	void print(std::ostream&) const;				/** Inserts all songs to given ostream */
 	void load(std::istream&);						/** Loads songs from input stream */

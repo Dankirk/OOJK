@@ -106,8 +106,12 @@ TEST_CASE("Print playlist", "[print_playlist]") {
 		Metadata::clear();
 
 		REQUIRE(Metadata::getCount() == 0);
-		pl1.evaluate(song1);
+		auto evaluated = pl1.evaluate(song1);
 		REQUIRE(Metadata::getCount() == 1);
+
+		// Confirm the song is listed as evaluated
+		REQUIRE(evaluated.size() == 1);
+		REQUIRE(*evaluated.front().get() == song1);
 	}
 
 	// Confirm playlist evaluations replace elements correctly

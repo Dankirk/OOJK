@@ -62,12 +62,9 @@ ConcreteSong::ConcreteSong(ConcreteSong&& cs) noexcept :
 	path(std::move(cs.path)),
 	metadata(std::move(cs.metadata))
 {
-	cs.metadata = nullptr;
-	/*
 	cs.path.clear();
-	cs.metadata.clear();
-	*/
-	}
+	cs.metadata.reset();
+}
 
 ConcreteSong& ConcreteSong::operator=(const ConcreteSong& cs) {
 	path = cs.path;
@@ -83,11 +80,8 @@ ConcreteSong& ConcreteSong::operator=(ConcreteSong&& cs) noexcept {
 	path = std::move(cs.path);
 	metadata = std::move(cs.metadata);
 	
-	cs.metadata = nullptr;
-	/*
 	cs.path.clear();
-	cs.metadata.clear();
-	*/
+	cs.metadata.reset();
 
 	return *this;
 }

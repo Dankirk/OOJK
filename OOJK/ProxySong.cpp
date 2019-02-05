@@ -50,7 +50,7 @@ ProxySong::ProxySong(const ProxySong& ps) : path(ps.path) {
 
 ProxySong::ProxySong(ProxySong&& ps) noexcept : path(std::move(ps.path)) {
 
-	//ps.path.clear();
+	ps.path.clear();
 }
 
 /**
@@ -80,7 +80,7 @@ ProxySong& ProxySong::operator=(ProxySong&& ps) noexcept {
 		return *this;
 
 	path = std::move(ps.path);
-	//ps.path.clear();
+	ps.path.clear();
 	
 	return *this;
 }

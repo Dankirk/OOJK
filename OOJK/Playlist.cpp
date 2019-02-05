@@ -119,7 +119,7 @@ Playlist::Playlist(const Playlist& pl) {
  */
 
 Playlist::Playlist(Playlist&& pl) noexcept : songs(std::move(pl.songs)) {
-	//pl.songs.clear();
+	pl.songs.clear();
 }
 
 /**
@@ -172,7 +172,7 @@ Playlist& Playlist::operator=(Playlist&& pl) noexcept {
 		return *this;
 
 	songs = std::move(pl.songs);
-	//pl.songs.clear();
+	pl.songs.clear();
 
 	return *this;
 }
@@ -185,7 +185,6 @@ Playlist& Playlist::operator=(Playlist&& pl) noexcept {
 
 void Playlist::evaluate() {
 	
-	//MetaContainer mc;
 	SongList newlist;
 
 	// Reserve equal amount of space for newlist
@@ -199,59 +198,37 @@ void Playlist::evaluate() {
 	}
 
 	// replace member songlist with the new one
-	//songs = std::move(newlist);
-	std::swap(newlist, songs);
+	songs = std::move(newlist);
+	// std::swap(newlist, songs);
 }
 
 /**
- @fn	std::list<SongElement&> Playlist::evaluate(const Song& song)
+ @fn	std::list<std::reference_wrapper<const SongElement>> Playlist::evaluate(const Song& song)
 
- @brief	Finds the iterators to given Song in playlist and calls evaluate(<iterator>) for those
+ @brief	Finds the specified song(s) in the playlist and evaluates those
 
- @param	song	Song to find from songlist and evaluate. 
+ @param	song	Song to find from playlist and evaluate. 
 				A playlist may contain multiple instances the song.
 
-@return		List of playlist iterators which songs were evaluated
+@return		List of references to songs that were evaluated
  */
 
-std::list<SongList::iterator> Playlist::evaluate(const Song& song) {
+std::list<std::reference_wrapper<const SongElement>> Playlist::evaluate(const Song& song) {
 
-	std::list<SongList::iterator> evaluated;
+	std::list<std::reference_wrapper<const SongElement>> evaluated;
 
 	for (auto it = songs.begin(); it != songs.end(); it++) {
 		if ((**it) == song) {
-			evaluate(it);
-			evaluated.push_back(it);
+			*it = std::make_unique<ConcreteSong>(
+				(**it).getPath(), 
+				(**it).evaluate()
+			);
+			evaluated.push_back(std::cref(*it));
 		}
 	}
 	return evaluated;
 }
 
-/**
- @fn	SongElement& Playlist::evaluate(SongList::iterator it)
-
- @brief	Evaluates the Song at given point in songlist and converts it into a ConcreteSong
-
- @exception	std::exception	Thrown when 'it' is out of range
-
- @param	it	Iterator of songlist
-
- @return	A reference to converted Song in playlist
- */
-
-const SongElement & Playlist::evaluate(const SongList::iterator& it) {
-
-	if (it == songs.end())
-		throw std::exception("Song not found in playlist");
-	
-	// Acquire metadata to construct ConcreteSong with
-	std::shared_ptr<MetaContainer> mc = (**it).evaluate();
-
-	// Replace element with another
-	*it = std::make_unique<ConcreteSong>((**it).getPath(), mc);
-	
-	return *it;
-}
 
 /**
  @fn	void Playlist::print(std::ostream& os) const
