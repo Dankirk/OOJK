@@ -76,13 +76,13 @@ Playlist::Playlist(const std::string &savefile) {
 
 	// Throw on failure to follow RAII for the Playlist object
 	if (file.fail())
-		throw std::exception("Cannot open playlist file for reading");
+		throw std::runtime_error("Cannot open playlist file for reading");
 
 	file >> *this;
 	file.close();
 
 	if (file.fail() && !file.eof())
-		throw std::exception("Error while reading playlist file");
+		throw std::runtime_error("Error while reading playlist file");
 }
 
 /**
@@ -368,11 +368,11 @@ void Playlist::writeToFile(const std::string& path) const {
 	std::ofstream file(path, std::ios_base::trunc);
 
 	if (file.fail())
-		throw std::exception("Cannot open playlist file for writing");
+		throw std::runtime_error("Cannot open playlist file for writing");
 
 	file << *this;
 	file.close();
 
 	if (file.fail() && !file.eof())
-		throw std::exception("Error writing to playlist file");
+		throw std::runtime_error("Error writing to playlist file");
 }

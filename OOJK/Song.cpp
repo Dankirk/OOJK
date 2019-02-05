@@ -1,4 +1,9 @@
-#pragma once
+/**
+ @file	Song.cpp.
+
+ @brief	Implements the song class
+ */
+
 #include "Song.h"
 
 /**
